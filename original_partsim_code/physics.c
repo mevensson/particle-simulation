@@ -45,7 +45,6 @@ float wall_collide(pcord_t *p, cord_t wall){
 }
 
 
-
 float collide(pcord_t *p1, pcord_t *p2){
     double a,b,c;
     double temp,t1,t2;
@@ -74,7 +73,6 @@ float collide(pcord_t *p1, pcord_t *p2){
     }	
     return -1;
 }
-
 
 
 void interact(pcord_t *p1,pcord_t *p2, float t){
@@ -132,14 +130,5 @@ void interact(pcord_t *p1,pcord_t *p2, float t){
 	(void)feuler(p1,c);
 	(void)feuler(p2,c);
     }
-
 }
-
-
-
-
-
-
-
-
 
