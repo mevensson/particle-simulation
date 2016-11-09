@@ -11,7 +11,7 @@ public class Physics {
 	}
 
 	/** Moves the a particle. */
-	int feuler(Particle a, double time_step) {
+	int euler(Particle a, double time_step) {
 		a.position.x = a.position.x + time_step * a.velocity.x;
 		a.position.y = a.position.y + time_step * a.velocity.y;
 		return 0;
@@ -93,8 +93,8 @@ public class Physics {
 		if (t >= 0) {
 
 			/* Move to impact point */
-			feuler(p1, t);
-			feuler(p2, t);
+			euler(p1, t);
+			euler(p2, t);
 
 			/* Rotate the coordinate system around p1 */
 			p2temp.position.x = p2.position.x - p1.position.x;
@@ -138,8 +138,8 @@ public class Physics {
 
 			/* Move the balls the remaining time. */
 			c = 1.0 - t;
-			feuler(p1, c);
-			feuler(p2, c);
+			euler(p1, c);
+			euler(p2, c);
 		}
 	}
 }
