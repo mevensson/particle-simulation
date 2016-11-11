@@ -46,4 +46,8 @@ public final class Vector {
 	public Vector add(Vector other) {
 		return new Vector(x + other.x, y + other.y);
 	}
+
+	public double abs() {
+		return Math.sqrt(x * x + y * y);
+	}
 }
