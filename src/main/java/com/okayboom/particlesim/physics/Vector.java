@@ -9,6 +9,10 @@ public final class Vector {
 		this.y = y;
 	}
 
+	public static Vector v(double x, double y) {
+		return new Vector(x, y);
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
