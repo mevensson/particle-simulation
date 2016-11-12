@@ -2,6 +2,8 @@ package com.okayboom.particlesim.physics;
 
 public class Physics {
 
+	public static final double NO_MOMENTUM = 0;
+
 	private double fabs(double n) {
 		return n < 0 ? -n : n;
 	}
