@@ -1,11 +1,6 @@
 package com.okayboom.particlesim;
 
-public class DefaultSettings implements Settings {
-
-	@Override
-	public double timeStep() {
-		return 1;
-	}
+public class DefaultSimSettings implements SimSettings {
 
 	@Override
 	public double maxInitialVelocity() {
