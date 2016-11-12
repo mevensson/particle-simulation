@@ -64,7 +64,7 @@ public class PhysicsTest {
 		// Total distance is traveled during 1 time unit is 10.
 		// Distance between particle centers are 5.
 		// Radius of both particles are 1.
-		assertEquals(0.3, time, DELTA);
+		assertEquals("Collision at 30% of time step", 0.3, time, DELTA);
 	}
 
 	@Test
@@ -74,8 +74,9 @@ public class PhysicsTest {
 
 		new Physics().interact(p2, p1, 0.3);
 
-		System.out.println("p1 " + p1);
-		System.out.println("p2 " + p2);
+		// TODO incomplete test - lack assertions
+		// System.out.println("p1 " + p1);
+		// System.out.println("p2 " + p2);
 
 		// Not applicable, because particle model is sort of broken.
 		// assertEquals("Momentum transfered to p1", v(6, 8), p1.velocity);
