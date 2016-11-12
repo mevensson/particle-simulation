@@ -26,13 +26,13 @@ public class PhysicsTest {
 
 	@Test
 	public void testWallCollideNoCollision() {
-		LineSegment wall = new LineSegment(v(-10, -10), v(10, 10));
+		Box box = new Box(v(-10, -10), v(10, 10));
 
 		Vector position = v(0, 0);
 		Vector velocity = v(5, 0);
 		Particle p = new Particle(position, velocity);
 
-		double result = new Physics().wall_collide(p, wall);
+		double result = new Physics().wall_collide(p, box);
 
 		assertEquals(result, Physics.NO_MOMENTUM, DELTA);
 		assertEquals("Velocity as before", velocity, p.velocity);
@@ -41,13 +41,13 @@ public class PhysicsTest {
 
 	@Test
 	public void testWallCollideRight() {
-		LineSegment wall = new LineSegment(v(-10, -10), v(10, 10));
+		Box box = new Box(v(-10, -10), v(10, 10));
 
 		Vector position = v(11, 0);
 		Vector velocity = v(5, 0);
 		Particle p = new Particle(position, velocity);
 
-		double result = new Physics().wall_collide(p, wall);
+		double result = new Physics().wall_collide(p, box);
 
 		assertEquals(result, 2 * velocity.abs(), DELTA);
 		assertEquals("Velocity reversed", v(-5, 0), p.velocity);

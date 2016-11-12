@@ -23,27 +23,27 @@ public class Physics {
 	 * wall_collide checks if a particle has exceeded the boundary and returns a
 	 * momentum. Use this momentum to calculate the pressure.
 	 */
-	double wall_collide(Particle p, LineSegment wall) {
+	double wall_collide(Particle p, Box box) {
 		double gPreassure = 0.0;
 
-		if (p.position.x < wall.a.x) {
+		if (p.position.x < box.a.x) {
 			p.velocity.x = -p.velocity.x;
-			p.position.x = wall.a.x + (wall.a.x - p.position.x);
+			p.position.x = box.a.x + (box.a.x - p.position.x);
 			gPreassure += 2.0 * fabs(p.velocity.x);
 		}
-		if (p.position.x > wall.b.x) {
+		if (p.position.x > box.b.x) {
 			p.velocity.x = -p.velocity.x;
-			p.position.x = wall.b.x - (p.position.x - wall.b.x);
+			p.position.x = box.b.x - (p.position.x - box.b.x);
 			gPreassure += 2.0 * fabs(p.velocity.x);
 		}
-		if (p.position.y < wall.a.y) {
+		if (p.position.y < box.a.y) {
 			p.velocity.y = -p.velocity.y;
-			p.position.y = wall.a.y + (wall.a.y - p.position.y);
+			p.position.y = box.a.y + (box.a.y - p.position.y);
 			gPreassure += 2.0 * fabs(p.velocity.y);
 		}
-		if (p.position.y > wall.b.y) {
+		if (p.position.y > box.b.y) {
 			p.velocity.y = -p.velocity.y;
-			p.position.y = wall.b.y - (p.position.y - wall.b.y);
+			p.position.y = box.b.y - (p.position.y - box.b.y);
 			gPreassure += 2.0 * fabs(p.velocity.y);
 		}
 		return gPreassure;
