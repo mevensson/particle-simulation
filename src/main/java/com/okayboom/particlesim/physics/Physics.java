@@ -57,7 +57,7 @@ public class Physics {
 
 		a = sqr(p1.velocity.x - p2.velocity.x)
 				+ sqr(p1.velocity.y - p2.velocity.y);
-		b = 2 * ((p1.position.x - p2.velocity.x)
+		b = 2 * ((p1.position.x - p2.position.x)
 				* (p1.velocity.x - p2.velocity.x) + (p1.position.y - p2.position.y)
 				* (p1.velocity.y - p2.velocity.y));
 		c = sqr(p1.position.x - p2.position.x)
