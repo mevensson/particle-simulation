@@ -47,4 +47,12 @@ public final class SimSettings {
 		return new SimSettings(settingsName, maxInitialVelocity, particleCount,
 				boxWidth, bh);
 	}
+
+	@Override
+	public String toString() {
+		return "SimSettings[\"" + settingsName + "\", maxInitVel="
+				+ maxInitialVelocity + ", particles=" + particleCount
+				+ ", box=" + boxWidth + "x" + boxHeight + "]";
+	}
+
 }
