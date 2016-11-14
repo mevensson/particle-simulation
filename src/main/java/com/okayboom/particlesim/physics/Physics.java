@@ -3,6 +3,7 @@ package com.okayboom.particlesim.physics;
 public class Physics {
 
 	public static final double NO_MOMENTUM = 0;
+	public static final double NO_COLLISION = -1;
 
 	private double fabs(double n) {
 		return n < 0 ? -n : n;
@@ -13,7 +14,7 @@ public class Physics {
 	}
 
 	/** Moves the a particle. */
-	int euler(Particle a, double time_step) {
+	public int euler(Particle a, double time_step) {
 		a.position.x = a.position.x + time_step * a.velocity.x;
 		a.position.y = a.position.y + time_step * a.velocity.y;
 		return 0;
@@ -23,7 +24,7 @@ public class Physics {
 	 * wall_collide checks if a particle has exceeded the boundary and returns a
 	 * momentum. Use this momentum to calculate the pressure.
 	 */
-	double wall_collide(Particle p, Box box) {
+	public double wall_collide(Particle p, Box box) {
 		double gPreassure = 0.0;
 
 		if (p.position.x < box.a.x) {
@@ -53,7 +54,7 @@ public class Physics {
 	 * The routine collide returns -1 if there will be no collision this time
 	 * step, otherwise it will return when the collision occurs.
 	 */
-	double collide(Particle p1, Particle p2) {
+	public double collide(Particle p1, Particle p2) {
 		double a, b, c;
 		double temp, t1, t2;
 
@@ -87,7 +88,7 @@ public class Physics {
 	}
 
 	/** The routine interact moves two particles involved in a collision. */
-	void interact(Particle p1, Particle p2, double t) {
+	public void interact(Particle p1, Particle p2, double t) {
 		double c, s, a, b, tao;
 		Particle p1temp = new Particle(new Vector(0, 0), new Vector(0, 0));
 		Particle p2temp = new Particle(new Vector(0, 0), new Vector(0, 0));
