@@ -24,7 +24,7 @@ public class BasicSimToGasLawConverter implements SimToGasLawConverter {
 	}
 
 	private double pressure(SimResult simResult) {
-		long stepCount = simResult.totalStepCount;
+		long stepCount = simResult.simSettings.steps;
 		int boxArea = boxArea(simResult.simSettings);
 		double momentum = simResult.totalBoxMomentum;
 

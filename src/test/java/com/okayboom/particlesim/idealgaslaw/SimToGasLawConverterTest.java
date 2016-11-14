@@ -16,10 +16,10 @@ public class SimToGasLawConverterTest {
 
 		SimSettings simSettings = SimSettings.EMPTY.settingsName("")
 				.maxInitialVelocity(0).particleCount(0).boxWidth(0)
-				.boxHeight(0);
+				.boxHeight(0).steps(0);
 
 		SimResult simResult = SimResult.EMPTY.givenSettings(simSettings)
-				.totalStepCount(0).totalBoxMomentum(0);
+				.totalBoxMomentum(0);
 
 		GasLawValue expectedGasLawValue = GasLawValue.empty().pressure(0)
 				.substance(0).temperature(0).volume(0).sampleName("");
@@ -34,14 +34,14 @@ public class SimToGasLawConverterTest {
 
 		SimSettings simSettings = SimSettings.EMPTY.settingsName("Alfa")
 				.maxInitialVelocity(222).particleCount(2).boxWidth(3)
-				.boxHeight(4);
+				.boxHeight(4).steps(5);
 
 		SimResult simResult = SimResult.EMPTY.givenSettings(simSettings)
-				.totalStepCount(5).totalBoxMomentum(35);
+				.totalBoxMomentum(35);
 
 		int boxArea = (simSettings.boxHeight + simSettings.boxWidth) * 2;
 		double expectedPressure = simResult.totalBoxMomentum / boxArea
-				/ simResult.totalStepCount;
+				/ simSettings.steps;
 
 		GasLawValue expectedGasLawValue = GasLawValue.empty()
 				.pressure(expectedPressure).substance(2).temperature(111)
