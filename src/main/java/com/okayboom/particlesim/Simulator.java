@@ -1,6 +1,6 @@
 package com.okayboom.particlesim;
 
-public interface Simulation {
+public interface Simulator {
 
 	SimResult simulate(SimSettings settings);
 
