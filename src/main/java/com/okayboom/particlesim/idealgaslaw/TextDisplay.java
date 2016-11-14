@@ -21,8 +21,8 @@ public class TextDisplay {
 		Text t = new Text();
 
 		t.line();
-		t.line(" Ideal gas law");
-		t.line(" =============");
+		t.line(" Ideal gas law summary");
+		t.line(" =====================");
 		t.line();
 		t.line("     PV = nRT");
 		t.line("       <=>");
@@ -35,8 +35,8 @@ public class TextDisplay {
 		t.line("    T is the absolute temperature of the gas");
 		t.line("    R is the ideal gas P is pressure");
 		t.line();
-		t.line(" Simulations");
-		t.line(" ===========");
+		t.line(" Simulation results");
+		t.line(" ==================");
 		t.line();
 		t.line(" | P            | V            | n            | T            | R*           | Name");
 		t.line(" +--------------+--------------+--------------+--------------+--------------+---------------------");

@@ -21,8 +21,8 @@ public class TextDisplayTest {
 
 	private void startLines() {
 		line();
-		line(" Ideal gas law");
-		line(" =============");
+		line(" Ideal gas law summary");
+		line(" =====================");
 		line();
 		line("     PV = nRT");
 		line("       <=>");
@@ -35,8 +35,8 @@ public class TextDisplayTest {
 		line("    T is the absolute temperature of the gas");
 		line("    R is the ideal gas P is pressure");
 		line();
-		line(" Simulations");
-		line(" ===========");
+		line(" Simulation results");
+		line(" ==================");
 		line();
 		line(" | P            | V            | n            | T            | R*           | Name");
 		line(" +--------------+--------------+--------------+--------------+--------------+---------------------");
