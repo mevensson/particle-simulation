@@ -8,4 +8,8 @@ public final class Box {
 		this.a = a;
 		this.b = b;
 	}
+
+	public static final Box box(double x1, double y1, double x2, double y2) {
+		return new Box(Vector.v(x1, y1), Vector.v(x2, y2));
+	}
 }
