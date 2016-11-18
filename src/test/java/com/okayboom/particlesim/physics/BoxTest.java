@@ -24,8 +24,8 @@ public class BoxTest {
 		Box b2 = box(0, 0, -1, -1);
 		Optional<Box> expected = Optional.empty();
 
-		assertEquals(expected, b1.intersect(b2));
-		assertEquals(expected, b2.intersect(b1));
+		assertEquals(expected, b1.intersection(b2));
+		assertEquals(expected, b2.intersection(b1));
 	}
 
 	@Test
@@ -34,8 +34,8 @@ public class BoxTest {
 		Box b2 = box(5, 0.5, 20, 20);
 		Optional<Box> expected = Optional.of(box(5, 0.5, 10, 1));
 
-		assertEquals(expected, b1.intersect(b2));
-		assertEquals(expected, b2.intersect(b1));
+		assertEquals(expected, b1.intersection(b2));
+		assertEquals(expected, b2.intersection(b1));
 	}
 
 	@Test

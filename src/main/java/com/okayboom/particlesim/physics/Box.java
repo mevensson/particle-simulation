@@ -21,16 +21,18 @@ public final class Box {
 		return new Box(a, b);
 	}
 
-	public Optional<Box> intersect(Box b2) {
+	public Optional<Box> intersection(Box b2) {
 
-		Vector isectMin = min.max(b2.min);
-		Vector isectMax = max.min(b2.max);
+		Vector intMin = min.max(b2.min);
+		Vector intMax = max.min(b2.max);
 
-		boolean hasNoIntesection = isectMin.x >= isectMax.x
-				|| isectMin.y >= isectMax.y;
+		boolean doIntersect = intMin.x < intMax.x && intMin.y < intMax.y;
+		Box box = doIntersect ? box(intMin, intMax) : null;
+		return Optional.ofNullable(box);
+	}
 
-		return hasNoIntesection ? Optional.empty() : Optional.of(box(isectMin,
-				isectMax));
+	public boolean doIntersect(Box b) {
+		return intersection(b).isPresent();
 	}
 
 	@Override
