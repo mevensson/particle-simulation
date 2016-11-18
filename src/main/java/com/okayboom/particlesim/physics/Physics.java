@@ -27,24 +27,24 @@ public class Physics {
 	public double wall_collide(Particle p, Box box) {
 		double gPreassure = 0.0;
 
-		if (p.position.x < box.a.x) {
+		if (p.position.x < box.min.x) {
 			p.velocity.x = -p.velocity.x;
-			p.position.x = box.a.x + (box.a.x - p.position.x);
+			p.position.x = box.min.x + (box.min.x - p.position.x);
 			gPreassure += 2.0 * fabs(p.velocity.x);
 		}
-		if (p.position.x > box.b.x) {
+		if (p.position.x > box.max.x) {
 			p.velocity.x = -p.velocity.x;
-			p.position.x = box.b.x - (p.position.x - box.b.x);
+			p.position.x = box.max.x - (p.position.x - box.max.x);
 			gPreassure += 2.0 * fabs(p.velocity.x);
 		}
-		if (p.position.y < box.a.y) {
+		if (p.position.y < box.min.y) {
 			p.velocity.y = -p.velocity.y;
-			p.position.y = box.a.y + (box.a.y - p.position.y);
+			p.position.y = box.min.y + (box.min.y - p.position.y);
 			gPreassure += 2.0 * fabs(p.velocity.y);
 		}
-		if (p.position.y > box.b.y) {
+		if (p.position.y > box.max.y) {
 			p.velocity.y = -p.velocity.y;
-			p.position.y = box.b.y - (p.position.y - box.b.y);
+			p.position.y = box.max.y - (p.position.y - box.max.y);
 			gPreassure += 2.0 * fabs(p.velocity.y);
 		}
 		return gPreassure;
