@@ -39,6 +39,16 @@ public class BoxTest {
 	}
 
 	@Test
+	public void testUnion() throws Exception {
+		Box b1 = box(0, 0, 1, 1);
+		Box b2 = box(0, 0, -1, -1);
+		Box expected = box(-1, -1, 1, 1);
+
+		assertEquals(expected, b1.union(b2));
+		assertEquals(expected, b2.union(b1));
+	}
+
+	@Test
 	public void testMid() throws Exception {
 		assertEquals(v(2, 20), box(1, 10, 3, 30).mid());
 		assertEquals(v(0, 0), box(0, 0, 0, 0).mid());

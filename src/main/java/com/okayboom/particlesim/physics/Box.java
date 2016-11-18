@@ -78,4 +78,10 @@ public final class Box {
 	public Vector maxMin() {
 		return v(max.x, min.y);
 	}
+
+	public Box union(Box b2) {
+		Vector unionMin = min.min(b2.min);
+		Vector unionMax = max.max(b2.max);
+		return box(unionMin, unionMax);
+	}
 }
