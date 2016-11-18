@@ -2,6 +2,7 @@ package com.okayboom.particlesim.idealgaslaw;
 
 import static org.junit.Assert.*;
 
+import java.text.DecimalFormatSymbols;
 import java.util.Arrays;
 import java.util.List;
 
@@ -70,9 +71,14 @@ public class TextDisplayTest {
 		GasLawValue g2 = GasLawValue.empty().pressure(2).volume(3).substance(4)
 				.temperature(5).sampleName("2nd simulation");
 
+		char sep = DecimalFormatSymbols.getInstance().getDecimalSeparator();
 		startLines();
-		line(" |      1001,00 |      1002,00 |      1003,00 |      1004,00 |     0,996018 | First Sim");
-		line(" |      2,00000 |      3,00000 |      4,00000 |      5,00000 |     0,300000 | 2nd simulation");
+		line(String.format(
+				" |      1001%s00 |      1002%s00 |      1003%s00 |      1004%s00 |     0%s996018 | First Sim",
+				sep, sep, sep, sep, sep));
+		line(String.format(
+				" |      2%s00000 |      3%s00000 |      4%s00000 |      5%s00000 |     0%s300000 | 2nd simulation",
+				sep, sep, sep, sep, sep));
 		endLines();
 
 		assertResultSummaryEqualsExpected(Arrays.asList(g1, g2));
