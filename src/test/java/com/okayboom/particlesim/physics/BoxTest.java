@@ -1,7 +1,8 @@
 package com.okayboom.particlesim.physics;
 
 import static com.okayboom.particlesim.physics.Box.box;
-import static org.junit.Assert.assertEquals;
+import static com.okayboom.particlesim.physics.Vector.v;
+import static org.junit.Assert.*;
 
 import java.util.Optional;
 
@@ -35,5 +36,17 @@ public class BoxTest {
 
 		assertEquals(expected, b1.intersect(b2));
 		assertEquals(expected, b2.intersect(b1));
+	}
+
+	@Test
+	public void testMid() throws Exception {
+		assertEquals(v(2, 20), box(1, 10, 3, 30).mid());
+		assertEquals(v(0, 0), box(0, 0, 0, 0).mid());
+	}
+
+	@Test
+	public void testMinMaxAndMaxMin() throws Exception {
+		assertEquals(v(1, 30), box(1, 10, 3, 30).minMax());
+		assertEquals(v(3, 10), box(1, 10, 3, 30).maxMin());
 	}
 }

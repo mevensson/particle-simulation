@@ -1,5 +1,7 @@
 package com.okayboom.particlesim.physics;
 
+import static com.okayboom.particlesim.physics.Vector.v;
+
 import java.util.Optional;
 
 public final class Box {
@@ -63,4 +65,17 @@ public final class Box {
 		return min.equals(other.min);
 	}
 
+	public Vector mid() {
+		double x = (min.x + max.x) / 2;
+		double y = (min.y + max.y) / 2;
+		return v(x, y);
+	}
+
+	public Vector minMax() {
+		return v(min.x, max.y);
+	}
+
+	public Vector maxMin() {
+		return v(max.x, min.y);
+	}
 }
