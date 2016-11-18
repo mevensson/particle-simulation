@@ -54,4 +54,12 @@ public final class Vector {
 	public double abs() {
 		return Math.sqrt(x * x + y * y);
 	}
+
+	public Vector min(Vector v2) {
+		return v(Math.min(x, v2.x), Math.min(y, v2.y));
+	}
+
+	public Vector max(Vector v2) {
+		return v(Math.max(x, v2.x), Math.max(y, v2.y));
+	}
 }
