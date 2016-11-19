@@ -38,4 +38,12 @@ public class QuadTreeTest {
 		qt.add(box(8, 8, 9, 9), "C");
 		assertFalse("QT not be a leaf", qt.isLeaf());
 	}
+
+	@Test
+	public void testGetBoundary() throws Exception {
+		QuadTree<String> qt = QuadTree.empty(totalArea, 2);
+		assertEquals(totalArea, qt.boundary());
+
+	}
+
 }

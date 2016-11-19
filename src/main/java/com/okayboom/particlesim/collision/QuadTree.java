@@ -13,8 +13,10 @@ public class QuadTree<V> implements SpatialMap<V> {
 	private final List<Pair> pairs = new ArrayList<>();
 	private final int leafLimit;
 	private List<QuadTree<V>> children = null;
+	private Box boundary;
 
-	public QuadTree(int leafLimit) {
+	public QuadTree(Box boundary, int leafLimit) {
+		this.boundary = boundary;
 		this.leafLimit = leafLimit;
 	}
 
@@ -33,12 +35,12 @@ public class QuadTree<V> implements SpatialMap<V> {
 	}
 
 	public static final <X> QuadTree<X> empty(Box boundary) {
-		return new QuadTree<X>(DEFAULT_LEAF_LIMIT);
+		return new QuadTree<X>(boundary, DEFAULT_LEAF_LIMIT);
 	}
 
 	public static final <X> QuadTree<X> empty(Box boundary, int leafLimit) {
 
-		return new QuadTree<X>(leafLimit);
+		return new QuadTree<X>(boundary, leafLimit);
 	}
 
 	public boolean isLeaf() {
@@ -77,5 +79,9 @@ public class QuadTree<V> implements SpatialMap<V> {
 	public List<V> get(Box box) {
 		return pairs.stream().filter(p -> p.box.doIntersect(box))
 				.map(p -> p.value).collect(Collectors.toList());
+	}
+
+	public Box boundary() {
+		return boundary;
 	}
 }
