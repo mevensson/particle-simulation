@@ -86,4 +86,8 @@ public final class Box {
 		Vector unionMax = max.max(b2.max);
 		return box(unionMin, unionMax);
 	}
+
+	public boolean doSorround(Box b) {
+		return union(b).equals(this);
+	}
 }

@@ -59,4 +59,26 @@ public class BoxTest {
 		assertEquals(v(1, 30), box(1, 10, 3, 30).minMax());
 		assertEquals(v(3, 10), box(1, 10, 3, 30).maxMin());
 	}
+
+	@Test
+	public void testDoSorround() throws Exception {
+		Box outer = box(0, 0, 2, 2);
+		Box inner = box(0.5, 0.5, 1, 1);
+		Box overlapping = box(-0.5, 0, 0.75, 0.75);
+
+		assertTrue("Outer sorrounds inner", outer.doSorround(inner));
+		assertTrue("Outer sorrounds outer", outer.doSorround(outer));
+		assertTrue("inner sorrounds inner", inner.doSorround(inner));
+		assertTrue("inner sorrounds inner", inner.doSorround(inner));
+		assertTrue("inner sorrounds inner", inner.doSorround(inner));
+
+		assertFalse("overlapping overlapps outer",
+				overlapping.doSorround(outer));
+		assertFalse("outer overlapps overlapping",
+				outer.doSorround(overlapping));
+		assertFalse("overlapping overlapps inner",
+				overlapping.doSorround(inner));
+		assertFalse("inner overlapps overlapping",
+				inner.doSorround(overlapping));
+	}
 }
