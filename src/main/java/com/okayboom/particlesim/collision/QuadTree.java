@@ -1,5 +1,7 @@
 package com.okayboom.particlesim.collision;
 
+import static com.okayboom.particlesim.physics.Box.box;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,9 +12,9 @@ public class QuadTree<V> implements SpatialMap<V> {
 
 	private final static int DEFAULT_LEAF_LIMIT = 8;
 
-	private final List<Pair> pairs = new ArrayList<>();
 	private final int leafLimit;
-	private List<QuadTree<V>> children = null;
+	private List<Pair> values = new ArrayList<>();
+	private List<QuadTree<V>> childTrees = null;
 	private Box boundary;
 
 	public QuadTree(Box boundary, int leafLimit) {
@@ -44,44 +46,68 @@ public class QuadTree<V> implements SpatialMap<V> {
 	}
 
 	public boolean isLeaf() {
-		return children == null;
+		return childTrees == null;
 	}
 
 	@Override
 	public void add(Box box, V value) {
 		Pair p = pair(value, box);
-		boolean hasReachedLimit = pairs.size() >= leafLimit;
+		boolean hasReachedLimit = values.size() >= leafLimit;
 
 		if (isLeaf() && hasReachedLimit)
 			transformFromLeafToInnerNode();
 
 		if (isLeaf()) {
-			pairs.add(p);
+			values.add(p);
 		} else {
 			distributeToChildren(p);
 		}
 	}
 
-	private void distributeToChildren(QuadTree<V>.Pair p) {
-		// TODO Auto-generated method stub
-
+	private void distributeToChildren(Pair p) {
+		for (QuadTree<V> child : childTrees) {
+			if (child.boundary.doSorround(p.box)) {
+				child.add(p.box, p.value);
+				return;
+			}
+		}
+		values.add(p);
 	}
 
 	private void transformFromLeafToInnerNode() {
-		children = new ArrayList<QuadTree<V>>(4);
-		children.add(empty(Box.box(0, 0, 0, 0)));
-		children.add(empty(Box.box(0, 0, 0, 0)));
-		children.add(empty(Box.box(0, 0, 0, 0)));
-		children.add(empty(Box.box(0, 0, 0, 0)));
+		Box minMinBox = box(boundary.mid(), boundary.min);
+		Box maxMaxBox = box(boundary.mid(), boundary.max);
+		Box minMaxBox = box(boundary.mid(), boundary.minMax());
+		Box maxMinBox = box(boundary.mid(), boundary.maxMin());
+
+		childTrees = new ArrayList<QuadTree<V>>(4);
+		childTrees.add(empty(minMinBox, leafLimit));
+		childTrees.add(empty(maxMaxBox, leafLimit));
+		childTrees.add(empty(minMaxBox, leafLimit));
+		childTrees.add(empty(maxMinBox, leafLimit));
+
+		List<QuadTree<V>.Pair> oldValues = values;
+		values = new ArrayList<>();
+
+		for (Pair oldValue : oldValues)
+			distributeToChildren(oldValue);
 	}
 
 	@Override
 	public List<V> get(Box box) {
-		return pairs.stream().filter(p -> p.box.doIntersect(box))
+		return values.stream().filter(p -> p.box.doIntersect(box))
 				.map(p -> p.value).collect(Collectors.toList());
 	}
 
 	public Box boundary() {
 		return boundary;
+	}
+
+	public List<QuadTree<V>> childTrees() {
+		return childTrees;
+	}
+
+	public List<Pair> values() {
+		return values;
 	}
 }
