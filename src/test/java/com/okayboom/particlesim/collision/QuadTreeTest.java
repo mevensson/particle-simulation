@@ -8,8 +8,11 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -86,5 +89,41 @@ public class QuadTreeTest {
 		List<String> values = maxMaxChild.get().get(box(6, 6, 9, 9));
 		assertEquals(1, values.size());
 		assertEquals("B", values.get(0));
+	}
+
+	@Test
+	public void testGetInNonLeafNode() throws Exception {
+		QuadTree<String> qt = QuadTree.empty(totalArea, 3);
+
+		// add four values (one more value than leaf limit).
+		qt.add(box(1, 1, 2, 2), "A");
+		qt.add(box(7, 7, 8, 8), "B");
+		qt.add(box(4, 4, 6, 6), "Center");
+		qt.add(box(3, 3, 4, 4), "C");
+
+		assertFalse("Should not be leaf", qt.isLeaf());
+		assertNotNull("Should have children", qt.childTrees());
+
+		assertEquals(Arrays.asList("A"), qt.get(box(-1, -1, 3, 3)));
+
+		assertElements(qt.get(box(-1, -1, 3, 3)), "A");
+		assertElements(qt.get(box(3, 3, 7, 7)), "Center", "C");
+		assertElements(qt.get(box(7, 7, 8, 8)), "B");
+		assertElements(qt.get(box(-100, -100, 100, 100)), "A", "B", "C",
+				"Center");
+	}
+
+	@SuppressWarnings("unchecked")
+	private <S> void assertElements(Collection<S> actual, S... expected) {
+		assertEquals(asSet(expected), asSet(actual));
+	}
+
+	@SuppressWarnings("unchecked")
+	private <S> Set<S> asSet(S... values) {
+		return new HashSet<S>(Arrays.asList(values));
+	}
+
+	private <S> Set<S> asSet(Collection<S> values) {
+		return new HashSet<S>(values);
 	}
 }

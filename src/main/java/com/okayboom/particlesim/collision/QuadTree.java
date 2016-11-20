@@ -57,11 +57,10 @@ public class QuadTree<V> implements SpatialMap<V> {
 		if (isLeaf() && hasReachedLimit)
 			transformFromLeafToInnerNode();
 
-		if (isLeaf()) {
+		if (isLeaf())
 			values.add(p);
-		} else {
+		else
 			distributeToChildren(p);
-		}
 	}
 
 	private void distributeToChildren(Pair p) {
@@ -95,8 +94,19 @@ public class QuadTree<V> implements SpatialMap<V> {
 
 	@Override
 	public List<V> get(Box box) {
-		return values.stream().filter(p -> p.box.doIntersect(box))
-				.map(p -> p.value).collect(Collectors.toList());
+
+		List<V> intersectingValue = values.stream()
+				.filter(p -> p.box.doIntersect(box)).map(p -> p.value)
+				.collect(Collectors.toList());
+
+		if (!isLeaf()) {
+			for (QuadTree<V> childTree : childTrees) {
+				if (childTree.boundary().doIntersect(box))
+					intersectingValue.addAll(childTree.get(box));
+			}
+		}
+
+		return intersectingValue;
 	}
 
 	public Box boundary() {
