@@ -90,4 +90,10 @@ public final class Box {
 	public boolean doSorround(Box b) {
 		return union(b).equals(this);
 	}
+
+	public Box pad(double padding) {
+		Vector paddedMin = min.add(v(-padding, -padding));
+		Vector paddedMax = max.add(v(padding, padding));
+		return box(paddedMin, paddedMax);
+	}
 }

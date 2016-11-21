@@ -81,4 +81,11 @@ public class BoxTest {
 		assertFalse("inner overlapps overlapping",
 				inner.doSorround(overlapping));
 	}
+
+	@Test
+	public void testAddMargin() throws Exception {
+		assertEquals(box(-1, -1, 1, 1), box(0, 0, 0, 0).pad(1));
+		assertEquals(box(-1, -1, 1, 1), box(0, 0, 0, 0).pad(-1));
+		assertEquals(box(0.5, 9.5, 2.5, 20.5), box(1, 10, 2, 20).pad(0.5));
+	}
 }
