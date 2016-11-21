@@ -5,6 +5,7 @@ apply plugin: 'application'
 mainClassName = 'com.okayboom.particlesim.idealgaslaw.VerifyGasLawProgram'
 
 
+applicationDefaultJvmArgs = ["-Xprof"]
 
 sourceCompatibility = 1.8
 
