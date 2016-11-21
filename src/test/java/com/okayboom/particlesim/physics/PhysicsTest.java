@@ -34,7 +34,7 @@ public class PhysicsTest {
 
 		double result = new Physics().wall_collide(p, box);
 
-		assertEquals(result, Physics.NO_MOMENTUM, DELTA);
+		assertEquals(result, 0, DELTA);
 		assertEquals("Velocity as before", velocity, p.velocity);
 		assertEquals("Position as before", position, p.position);
 	}

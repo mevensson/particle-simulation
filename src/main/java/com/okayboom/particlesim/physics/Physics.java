@@ -2,7 +2,6 @@ package com.okayboom.particlesim.physics;
 
 public class Physics {
 
-	public static final double NO_MOMENTUM = 0;
 	public static final double NO_COLLISION = -1;
 
 	private double fabs(double n) {
