@@ -62,4 +62,8 @@ public final class Vector {
 	public Vector max(Vector v2) {
 		return v(Math.max(x, v2.x), Math.max(y, v2.y));
 	}
+
+	public Vector sub(Vector other) {
+		return v(x - (other.x), y - (other.y));
+	}
 }
