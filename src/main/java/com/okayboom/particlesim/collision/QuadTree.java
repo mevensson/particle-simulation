@@ -3,6 +3,7 @@ package com.okayboom.particlesim.collision;
 import static com.okayboom.particlesim.physics.Box.box;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.okayboom.particlesim.physics.Box;
@@ -13,7 +14,7 @@ public class QuadTree<V> implements SpatialMap<V> {
 
 	private final int leafLimit;
 	private List<Pair> values = new ArrayList<>();
-	private List<QuadTree<V>> childTrees = null;
+	private QuadTree<V>[] childTrees = null;
 	private Box boundary;
 
 	public QuadTree(Box boundary, int leafLimit) {
@@ -78,17 +79,19 @@ public class QuadTree<V> implements SpatialMap<V> {
 		values.add(p);
 	}
 
+	@SuppressWarnings("unchecked")
 	private void transformFromLeafToInnerNode() {
 		Box minMinBox = box(boundary.mid(), boundary.min);
 		Box maxMaxBox = box(boundary.mid(), boundary.max);
 		Box minMaxBox = box(boundary.mid(), boundary.minMax());
 		Box maxMinBox = box(boundary.mid(), boundary.maxMin());
 
-		childTrees = new ArrayList<QuadTree<V>>(4);
-		childTrees.add(empty(minMinBox, leafLimit));
-		childTrees.add(empty(maxMaxBox, leafLimit));
-		childTrees.add(empty(minMaxBox, leafLimit));
-		childTrees.add(empty(maxMinBox, leafLimit));
+		childTrees = (QuadTree<V>[]) new QuadTree<?>[4];
+
+		childTrees[0] = empty(minMinBox, leafLimit);
+		childTrees[1] = empty(maxMaxBox, leafLimit);
+		childTrees[2] = empty(minMaxBox, leafLimit);
+		childTrees[3] = empty(maxMinBox, leafLimit);
 
 		List<QuadTree<V>.Pair> oldValues = values;
 		values = new ArrayList<>();
@@ -122,7 +125,7 @@ public class QuadTree<V> implements SpatialMap<V> {
 	}
 
 	public List<QuadTree<V>> childTrees() {
-		return childTrees;
+		return isLeaf() ? null : Arrays.asList(childTrees);
 	}
 
 	public List<Pair> values() {
@@ -144,6 +147,6 @@ public class QuadTree<V> implements SpatialMap<V> {
 	}
 
 	private int childSize(int index) {
-		return childTrees.get(index).size();
+		return childTrees[index].size();
 	}
 }
