@@ -34,6 +34,12 @@ public class QuadTree<V> implements SpatialMap<V> {
 			this.value = value;
 			this.box = box;
 		}
+
+		@Override
+		public String toString() {
+			return "(v=" + value + ", " + box + ")";
+		}
+
 	}
 
 	public static final <X> QuadTree<X> empty(Box boundary) {
@@ -119,5 +125,23 @@ public class QuadTree<V> implements SpatialMap<V> {
 
 	public List<Pair> values() {
 		return values;
+	}
+
+	public int size() {
+		return values.size()
+				+ (isLeaf() ? 0 : childSize(0) + childSize(1) + childSize(2)
+						+ childSize(3));
+	}
+
+	@Override
+	public String toString() {
+		String treeRepresentation = isLeaf() ? "is leaf" : childSize(0) + " "
+				+ childSize(1) + " " + childSize(2) + " " + childSize(3);
+		return "QuadTree(" + leafLimit + ")[" + treeRepresentation
+				+ ", valCount=" + values.size() + ", bound=" + boundary + "]";
+	}
+
+	private int childSize(int index) {
+		return childTrees.get(index).size();
 	}
 }
