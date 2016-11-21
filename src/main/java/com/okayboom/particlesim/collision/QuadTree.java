@@ -4,7 +4,6 @@ import static com.okayboom.particlesim.physics.Box.box;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.okayboom.particlesim.physics.Box;
 
@@ -101,9 +100,12 @@ public class QuadTree<V> implements SpatialMap<V> {
 	@Override
 	public List<V> get(Box box) {
 
-		List<V> intersectingValue = values.stream()
-				.filter(p -> p.box.doIntersect(box)).map(p -> p.value)
-				.collect(Collectors.toList());
+		List<V> intersectingValue = new ArrayList<>();
+
+		for (Pair value : values) {
+			if (value.box.doIntersect(box))
+				intersectingValue.add(value.value);
+		}
 
 		if (!isLeaf()) {
 			for (QuadTree<V> childTree : childTrees) {
