@@ -5,10 +5,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.okayboom.particlesim.SimResult;
 import com.okayboom.particlesim.SimSettings;
 import com.okayboom.particlesim.Simulator;
-import com.okayboom.particlesim.basicsim.BasicSimulator;
+import com.okayboom.particlesim.basicsim.QuadTreeSimulator;
 import com.okayboom.particlesim.basicsim.TimeMeasureSimulator;
 
 public class VerifyGasLawProgram {
@@ -35,7 +34,8 @@ public class VerifyGasLawProgram {
 	}
 
 	private static Simulator simulator() {
-		return new TimeMeasureSimulator(new BasicSimulator());
+		// return new TimeMeasureSimulator(new BasicSimulator());
+		return new TimeMeasureSimulator(new QuadTreeSimulator());
 	}
 
 	private static List<SimSettings> settingSeries(SimSettings baseline) {
