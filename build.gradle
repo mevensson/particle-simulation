@@ -1,8 +1,15 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
+apply plugin: 'application'
+
+mainClassName = 'com.okayboom.particlesim.idealgaslaw.VerifyGasLawProgram'
+
+
 
 sourceCompatibility = 1.8
+
 version = '1.0'
+
 jar {
     manifest {
         attributes 'Implementation-Title': 'Particle Simulation',
