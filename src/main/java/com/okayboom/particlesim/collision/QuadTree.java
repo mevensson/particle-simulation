@@ -58,15 +58,17 @@ public class QuadTree<V> implements SpatialMap<V> {
 	@Override
 	public void add(Box box, V value) {
 		Pair p = pair(value, box);
-		boolean hasReachedLimit = values.size() >= leafLimit;
 
-		if (isLeaf() && hasReachedLimit)
-			transformFromLeafToInnerNode();
-
-		if (isLeaf())
+		if (isLeaf()) {
 			values.add(p);
-		else
+
+			boolean hasReachedLimit = values.size() > leafLimit;
+			if (hasReachedLimit) {
+				transformFromLeafToInnerNode();
+			}
+		} else {
 			distributeToChildren(p);
+		}
 	}
 
 	private void distributeToChildren(Pair p) {
