@@ -102,22 +102,24 @@ public class QuadTree<V> implements SpatialMap<V> {
 
 	@Override
 	public List<V> get(Box box) {
-
 		List<V> intersectingValue = new ArrayList<>();
+		get(intersectingValue, box);
+		return intersectingValue;
+	}
+
+	private void get(List<V> result, Box box) {
 
 		for (Pair value : values) {
 			if (value.box.doIntersect(box))
-				intersectingValue.add(value.value);
+				result.add(value.value);
 		}
 
 		if (!isLeaf()) {
 			for (QuadTree<V> childTree : childTrees) {
 				if (childTree.boundary().doIntersect(box))
-					intersectingValue.addAll(childTree.get(box));
+					childTree.get(result, box);
 			}
 		}
-
-		return intersectingValue;
 	}
 
 	public Box boundary() {
