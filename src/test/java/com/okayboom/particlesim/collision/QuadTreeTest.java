@@ -126,4 +126,34 @@ public class QuadTreeTest {
 	private <S> Set<S> asSet(Collection<S> values) {
 		return new HashSet<S>(values);
 	}
+
+	@Test
+	public void testChildBoundaryMargin() throws Exception {
+		QuadTree<String> qt = QuadTree.empty(totalArea.pad(1000), 0, 1);
+
+		assertEquals(1, qt.childBoundaryMargin(), 0);
+
+		assertEquals("No values in this three node", 0, qt.values().size());
+		assertEquals("No elements", 0, qt.size());
+
+		qt.add(box(4, 4, 6, 6), "Center");
+
+		assertEquals("No values in this three node", 0, qt.values().size());
+		assertEquals("One elements in a child node", 1, qt.size());
+
+		qt.add(box(3, 3, 6, 6), "Center 2");
+
+		assertEquals("No values in this three node", 0, qt.values().size());
+		assertEquals("One elements in a child node", 2, qt.size());
+
+		qt.add(box(4, 4, 7, 7), "Center 3");
+
+		assertEquals("No values in this three node", 0, qt.values().size());
+		assertEquals("One elements in a child node", 3, qt.size());
+
+		qt.add(box(3, 3, 7, 7), "Center too big for be within margin");
+
+		assertEquals("No values in this three node", 1, qt.values().size());
+		assertEquals("One elements in a child node", 4, qt.size());
+	}
 }

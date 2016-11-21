@@ -7,19 +7,24 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.okayboom.particlesim.physics.Box;
+import com.okayboom.particlesim.physics.Vector;
 
 public class QuadTree<V> implements SpatialMap<V> {
 
+	private static final double MARGIN_MAX_FACTOR = 0.01;
+
 	private final static int DEFAULT_LEAF_LIMIT = 8;
 
+	private final double childBoundaryMargin;
 	private final int leafLimit;
 	private List<Pair> values = new ArrayList<>();
 	private QuadTree<V>[] childTrees = null;
 	private Box boundary;
 
-	public QuadTree(Box boundary, int leafLimit) {
+	public QuadTree(Box boundary, int leafLimit, double childBoundaryMargin) {
 		this.boundary = boundary;
 		this.leafLimit = leafLimit;
+		this.childBoundaryMargin = childBoundaryMargin;
 	}
 
 	private Pair pair(V value, Box box) {
@@ -43,12 +48,17 @@ public class QuadTree<V> implements SpatialMap<V> {
 	}
 
 	public static final <X> QuadTree<X> empty(Box boundary) {
-		return new QuadTree<X>(boundary, DEFAULT_LEAF_LIMIT);
+		return new QuadTree<X>(boundary, DEFAULT_LEAF_LIMIT, 0);
 	}
 
 	public static final <X> QuadTree<X> empty(Box boundary, int leafLimit) {
 
-		return new QuadTree<X>(boundary, leafLimit);
+		return new QuadTree<X>(boundary, leafLimit, 0);
+	}
+
+	public static final <X> QuadTree<X> empty(Box boundary, int leafLimit,
+			double childBoundaryMargin) {
+		return new QuadTree<X>(boundary, leafLimit, childBoundaryMargin);
 	}
 
 	public boolean isLeaf() {
@@ -83,17 +93,23 @@ public class QuadTree<V> implements SpatialMap<V> {
 
 	@SuppressWarnings("unchecked")
 	private void transformFromLeafToInnerNode() {
-		Box minMinBox = box(boundary.mid(), boundary.min);
-		Box maxMaxBox = box(boundary.mid(), boundary.max);
-		Box minMaxBox = box(boundary.mid(), boundary.minMax());
-		Box maxMinBox = box(boundary.mid(), boundary.maxMin());
+		Vector mid = boundary.mid();
+		Box minMinBox = box(mid, boundary.min);
+		Box maxMaxBox = box(mid, boundary.max);
+		Box minMaxBox = box(mid, boundary.minMax());
+		Box maxMinBox = box(mid, boundary.maxMin());
+
+		Vector boundarySize = boundary.max.sub(boundary.min);
+		double minLength = Math.min(boundarySize.x, boundarySize.y);
+		double padding = Math.min(minLength * MARGIN_MAX_FACTOR,
+				childBoundaryMargin);
 
 		childTrees = (QuadTree<V>[]) new QuadTree<?>[4];
 
-		childTrees[0] = empty(minMinBox, leafLimit);
-		childTrees[1] = empty(maxMaxBox, leafLimit);
-		childTrees[2] = empty(minMaxBox, leafLimit);
-		childTrees[3] = empty(maxMinBox, leafLimit);
+		childTrees[0] = empty(minMinBox.pad(padding), leafLimit, padding);
+		childTrees[1] = empty(maxMaxBox.pad(padding), leafLimit, padding);
+		childTrees[2] = empty(minMaxBox.pad(padding), leafLimit, padding);
+		childTrees[3] = empty(maxMinBox.pad(padding), leafLimit, padding);
 
 		List<QuadTree<V>.Pair> oldValues = values;
 		values = new ArrayList<>();
@@ -152,5 +168,9 @@ public class QuadTree<V> implements SpatialMap<V> {
 
 	private int childSize(int index) {
 		return childTrees[index].size();
+	}
+
+	public double childBoundaryMargin() {
+		return childBoundaryMargin;
 	}
 }
