@@ -52,6 +52,8 @@ public class VerifyGasLawProgram {
 				bl.particleCount / 2));
 		settings.add(bl.settingsName("Double Particle Count").particleCount(
 				bl.particleCount * 2));
+		settings.add(bl.settingsName("Quad Particle Count").particleCount(
+				bl.particleCount * 4));
 		return settings;
 	}
 
