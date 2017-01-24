@@ -17,9 +17,9 @@ public class BasicSimulator implements Simulator {
 	@Override
 	public SimResult simulate(final SimSettings settings) {
 
-		List<Particle> particles = SimUtil.particles(settings);
+		final List<Particle> particles = SimUtil.particles(settings);
 
-		Box walls = SimUtil.walls(settings);
+		final Box walls = SimUtil.walls(settings);
 
 		double totalMomentum = 0;
 		for (int timeStep = 0; timeStep < settings.steps; ++timeStep) {
@@ -30,54 +30,71 @@ public class BasicSimulator implements Simulator {
 				totalMomentum);
 	}
 
-	private double simulateOneStep(List<Particle> particles, Box walls) {
-		int particleCount = particles.size();
+	private double simulateOneStep(final List<Particle> particles, final Box walls) {
+		final int particleCount = particles.size();
 
-		boolean[] hasMoved = new boolean[particleCount];
+		final boolean[] hasMoved = new boolean[particleCount];
 
 		int totalMomentum = 0;
 		for (int i = 0; i < particleCount; ++i) {
-			Particle p1 = particles.get(i);
-
-			Optional<Collision> collisionOpt = findCollision(particles, i,
-					hasMoved);
-
-			if (collisionOpt.isPresent()) {
-				Collision collision = collisionOpt.get();
-
-				hasMoved[collision.otherParticleIndex] = true;
-
-				Particle p2 = particles.get(collision.otherParticleIndex);
-				double collisionTime = collision.collisionTime;
-				PHY.interact(p1, p2, collisionTime);
-			} else {
-				PHY.euler(p1, 1);
-			}
-
-			hasMoved[i] = true;
-
-			totalMomentum += PHY.wall_collide(p1, walls);
+			final double momentum = handleParticle(particles, walls, hasMoved, i);
+			totalMomentum += momentum;
 		}
 
 		return totalMomentum;
 	}
 
-	private Optional<Collision> findCollision(List<Particle> particles,
-			int firstParticleIndex, boolean[] hasMoved) {
+	private double handleParticle(final List<Particle> particles, final Box walls,
+			final boolean[] hasMoved, final int i) {
+		final Particle p1 = particles.get(i);
 
-		Particle p1 = particles.get(firstParticleIndex);
+		final Optional<Collision> collisionOpt = findCollision(particles, i,
+				hasMoved);
+		hasMoved[i] = true;
+		if (collisionOpt.isPresent()) {
+			final Collision collision = collisionOpt.get();
+
+			hasMoved[collision.otherParticleIndex] = true;
+		}
+
+		moveParticle(particles, p1, collisionOpt);
+
+		return PHY.wall_collide(p1, walls);
+	}
+
+	private void moveParticle(final List<Particle> particles, final Particle p1,
+			final Optional<Collision> collisionOpt) {
+		if (collisionOpt.isPresent()) {
+			final Collision collision = collisionOpt.get();
+			final Particle p2 = particles.get(collision.otherParticleIndex);
+			final double collisionTime = collision.collisionTime;
+			PHY.interact(p1, p2, collisionTime);
+		} else {
+			PHY.euler(p1, 1);
+		}
+	}
+
+	private Optional<Collision> findCollision(final List<Particle> particles,
+			final int firstParticleIndex, final boolean[] hasMoved) {
+
+		Optional<Collision> collision = Optional.empty();
+		final Particle p1 = particles.get(firstParticleIndex);
 		for (int j = firstParticleIndex + 1; j < particles.size(); ++j) {
 
 			if (!hasMoved[j]) {
 
-				Particle p2 = particles.get(j);
-				double collisionTime = PHY.collide(p1, p2);
+				final Particle p2 = particles.get(j);
+				final double collisionTime = PHY.collide(p1, p2);
 
-				if (collisionTime != Physics.NO_COLLISION)
-					return Optional.of(new Collision(j, collisionTime));
+				if (collisionTime != Physics.NO_COLLISION) {
+					if (!collision.isPresent()
+							|| collisionTime < collision.get().collisionTime) {
+						collision = Optional.of(new Collision(j, collisionTime));
+					}
+				}
 
 			}
 		}
-		return Optional.empty();
+		return collision;
 	}
 }
