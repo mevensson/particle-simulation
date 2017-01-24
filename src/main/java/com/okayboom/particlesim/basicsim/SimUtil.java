@@ -19,7 +19,7 @@ public class SimUtil {
 	}
 
 	static private Stream<Particle> particleStream(SimSettings settings) {
-		Random rnd = new Random();
+		Random rnd = new Random(1);
 		Stream<Vector> velos = velocityStream(settings, rnd);
 		Stream<Vector> poses = positionStream(settings, rnd);
 		return StreamUtils.zip(poses, velos, (s, v) -> new Particle(s, v));
