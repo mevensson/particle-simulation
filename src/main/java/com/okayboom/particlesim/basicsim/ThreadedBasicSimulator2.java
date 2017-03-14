@@ -1,13 +1,12 @@
 package com.okayboom.particlesim.basicsim;
 
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.ForkJoinPool;
+import java.util.function.IntFunction;
+import java.util.stream.IntStream;
 
 import com.okayboom.particlesim.SimResult;
 import com.okayboom.particlesim.SimSettings;
@@ -20,7 +19,7 @@ public class ThreadedBasicSimulator2 implements Simulator {
 
 	private static final Physics PHY = new Physics();
 
-	private final ExecutorService threadPool = Executors.newFixedThreadPool(1);
+	private final ForkJoinPool threadPool = new ForkJoinPool(1);
 
 	@Override
 	public SimResult simulate(final SimSettings settings) {
@@ -31,7 +30,7 @@ public class ThreadedBasicSimulator2 implements Simulator {
 
 		double totalMomentum = 0;
 		for (int timeStep = 0; timeStep < settings.steps; ++timeStep) {
-			System.out.println("step " + timeStep);
+			//System.out.println("step " + timeStep);
 			totalMomentum += simulateOneStep(particles, walls);
 		}
 
@@ -74,38 +73,36 @@ public class ThreadedBasicSimulator2 implements Simulator {
 	private Optional<Collision> findCollision(final List<Particle> particles,
 			final int firstParticleIndex, final boolean[] hasMoved) {
 		final Particle p1 = particles.get(firstParticleIndex);
-		final List<Callable<Optional<Collision>>> taskList = new ArrayList<>();
-		for (int j = firstParticleIndex + 1; j < particles.size(); ++j) {
-			if (!hasMoved[j]) {
-				final Particle p2 = particles.get(j);
-				final int otherIndex = j;
-				taskList.add(() -> {
-					final double collisionTime = PHY.collide(p1, p2);
-					if (collisionTime != Physics.NO_COLLISION) {
-						return Optional.of(new Collision(otherIndex, collisionTime));
-					}
-					return Optional.empty();
-				});
+
+		final IntFunction<Optional<Collision>> checkCollision = (otherIndex) -> {
+			final Particle p2 = particles.get(otherIndex);
+			final double collisionTime = PHY.collide(p1, p2);
+			if (collisionTime != Physics.NO_COLLISION) {
+				return Optional.of(new Collision(otherIndex, collisionTime));
 			}
-		}
-
-		Optional<Collision> collision = Optional.empty();
-		try {
-			final List<Future<Optional<Collision>>> results =
-					threadPool.invokeAll(taskList);
-
-			for (final Future<Optional<Collision>> result : results) {
-				final Optional<Collision> newCollision = result.get();
-				if (newCollision.isPresent()) {
-					if (!collision.isPresent()
-							|| newCollision.get().collisionTime < collision.get().collisionTime) {
-						collision = newCollision;
-					}
+			return Optional.empty();
+		};
+		final Comparator<Optional<Collision>> collisionComparator = (c1, c2) -> {
+			if (c1.isPresent()) {
+				if (c2.isPresent()) {
+					return Double.compare(c1.get().collisionTime, c2.get().collisionTime);
 				}
+				return -1;
+			} else if (c2.isPresent()) {
+				return 1;
+			} else {
+				return 0;
 			}
-		} catch (final InterruptedException | ExecutionException e) {
+		};
+		try {
+			return threadPool.submit(() -> {
+				return IntStream.range(firstParticleIndex + 1, particles.size())
+						.parallel()
+						.mapToObj(checkCollision)
+						.min(collisionComparator).orElse(Optional.empty());
+			}).get();
+		} catch (InterruptedException | ExecutionException e) {
+			return Optional.empty();
 		}
-
-		return collision;
 	}
 }

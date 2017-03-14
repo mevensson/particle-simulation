@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 import com.okayboom.particlesim.SimSettings;
 import com.okayboom.particlesim.Simulator;
-import com.okayboom.particlesim.basicsim.QuadTreeSimulator;
+import com.okayboom.particlesim.basicsim.ThreadedBasicSimulator2;
 import com.okayboom.particlesim.basicsim.TimeMeasureSimulator;
 
 public class VerifyGasLawProgram {
@@ -16,32 +16,33 @@ public class VerifyGasLawProgram {
 	private static SimToGasLawConverter gasLawConverter = new BasicSimToGasLawConverter();
 	private static TextDisplay textDisplay = new TextDisplay();
 
-	public static void main(String[] args) {
-		List<SimSettings> settings = settingSeries(baseLineSettings());
+	public static void main(final String[] args) {
+		final List<SimSettings> settings = settingSeries(baseLineSettings());
 
 		System.out.println(" Running " + settings.size() + " simulations");
 		System.out.println(" ===========================================");
 
-		List<GasLawValue> gasLawValues = simulate(settings);
-		String textResults = textDisplay.summarizeResults(gasLawValues);
+		final List<GasLawValue> gasLawValues = simulate(settings);
+		final String textResults = textDisplay.summarizeResults(gasLawValues);
 
 		System.out.println(textResults);
 	}
 
-	private static List<GasLawValue> simulate(Collection<SimSettings> settings) {
+	private static List<GasLawValue> simulate(final Collection<SimSettings> settings) {
 		return settings.stream().map(simulator::simulate)
 				.map(gasLawConverter::convert).collect(Collectors.toList());
 	}
 
 	private static Simulator simulator() {
-		// return new TimeMeasureSimulator(new BasicSimulator());
-		return new TimeMeasureSimulator(new QuadTreeSimulator());
+		//return new TimeMeasureSimulator(new BasicSimulator());
+//		return new TimeMeasureSimulator(new QuadTreeSimulator());
+		return new TimeMeasureSimulator(new ThreadedBasicSimulator2());
 	}
 
-	private static List<SimSettings> settingSeries(SimSettings baseline) {
-		ArrayList<SimSettings> settings = new ArrayList<>();
+	private static List<SimSettings> settingSeries(final SimSettings baseline) {
+		final ArrayList<SimSettings> settings = new ArrayList<>();
 
-		SimSettings bl = baseline; // just alias rename
+		final SimSettings bl = baseline; // just alias rename
 
 		settings.add(bl);
 

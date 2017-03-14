@@ -1,0 +1,49 @@
+ Running 6 simulations
+ ===========================================
+
+Running simulation with SimSettings["Baseline", maxInitVel=24.0, particles=2000, box=1000x1000, steps=500]
+Simulation took 15410 ms
+
+Running simulation with SimSettings["Half Width", maxInitVel=24.0, particles=2000, box=500x1000, steps=500]
+Simulation took 15272 ms
+
+Running simulation with SimSettings["Double Width", maxInitVel=24.0, particles=2000, box=2000x1000, steps=500]
+Simulation took 15221 ms
+
+Running simulation with SimSettings["Half Particle Count", maxInitVel=24.0, particles=1000, box=1000x1000, steps=500]
+Simulation took 6705 ms
+
+Running simulation with SimSettings["Double Particle Count", maxInitVel=24.0, particles=4000, box=1000x1000, steps=500]
+Simulation took 37769 ms
+
+Running simulation with SimSettings["Quad Particle Count", maxInitVel=24.0, particles=8000, box=1000x1000, steps=500]
+Simulation took 108522 ms
+
+ Ideal gas law summary
+ =====================
+
+     PV = nRT
+       <=>
+      R = PV/(nT)
+
+    where
+    P is pressure
+    V is volume
+    n is is the ammount of substance (here particle count)
+    T is the absolute temperature of the gas
+    R is the ideal gas P is pressure
+
+ Simulation results
+ ==================
+
+ | P            | V            | n            | T            | R*           | Name
+ +--------------+--------------+--------------+--------------+--------------+---------------------
+ |     0.207245 |  1.00000e+06 |      2000.00 |      12.0000 |      8.63521 | Baseline
+ |     0.445657 |       500000 |      2000.00 |      12.0000 |      9.28453 | Half Width
+ |     0.104803 |  2.00000e+06 |      2000.00 |      12.0000 |      8.73356 | Double Width
+ |    0.0998090 |  1.00000e+06 |      1000.00 |      12.0000 |      8.31742 | Half Particle Count
+ |     0.432415 |  1.00000e+06 |      4000.00 |      12.0000 |      9.00864 | Double Particle Count
+ |     0.907648 |  1.00000e+06 |      8000.00 |      12.0000 |      9.45467 | Quad Particle Count
+ +--------------+--------------+--------------+--------------+--------------+---------------------
+
+ *) Calculated from the other values
