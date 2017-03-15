@@ -1,5 +1,6 @@
 package com.okayboom.particlesim.basicsim;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,30 +34,29 @@ public class BasicSimulator implements Simulator {
 	private double simulateOneStep(final List<Particle> particles, final Box walls) {
 		final int particleCount = particles.size();
 
-		final boolean[] hasMoved = new boolean[particleCount];
+		final List<Particle> hasMoved = new ArrayList<>();
 
 		int totalMomentum = 0;
 		for (int i = 0; i < particleCount; ++i) {
 			final Particle p1 = particles.get(i);
 
-			if (!hasMoved[i]) {
+			if (!hasMoved.contains(p1)) {
 				final Optional<Collision> collisionOpt = findCollision(particles, i,
 						hasMoved);
 
 				if (collisionOpt.isPresent()) {
 					final Collision collision = collisionOpt.get();
 
-					hasMoved[collision.otherParticleIndex] = true;
-
 					final Particle p2 = particles.get(collision.otherParticleIndex);
+					hasMoved.add(p2);
+
 					final double collisionTime = collision.collisionTime;
 					PHY.interact(p1, p2, collisionTime);
 				} else {
 					PHY.euler(p1, 1);
 				}
+				hasMoved.add(p1);
 			}
-
-			hasMoved[i] = true;
 
 			totalMomentum += PHY.wall_collide(p1, walls);
 		}
@@ -65,14 +65,14 @@ public class BasicSimulator implements Simulator {
 	}
 
 	private Optional<Collision> findCollision(final List<Particle> particles,
-			final int firstParticleIndex, final boolean[] hasMoved) {
+			final int firstParticleIndex, final List<Particle> hasMoved) {
 		Optional<Collision> collision = Optional.empty();
 		final Particle p1 = particles.get(firstParticleIndex);
 		for (int j = firstParticleIndex + 1; j < particles.size(); ++j) {
 
-			if (!hasMoved[j]) {
+			final Particle p2 = particles.get(j);
+			if (!hasMoved.contains(p2)) {
 
-				final Particle p2 = particles.get(j);
 				final double collisionTime = PHY.collide(p1, p2);
 
 				if (collisionTime != Physics.NO_COLLISION) {
