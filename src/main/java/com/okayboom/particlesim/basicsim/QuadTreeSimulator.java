@@ -88,7 +88,7 @@ public class QuadTreeSimulator implements Simulator {
 		final Vector nextPositionMinus = nextPosition.add(NEG_RADIUS);
 
 		final Vector boxMin = positionMinus.min(nextPositionMinus);
-		final Vector boxMax = positionPlus.min(nextPositionPlus);
+		final Vector boxMax = positionPlus.max(nextPositionPlus);
 
 		return Box.box(boxMin, boxMax);
 	}
