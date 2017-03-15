@@ -22,10 +22,10 @@ public class QuadTreeSimulator implements Simulator {
 	@Override
 	public SimResult simulate(final SimSettings settings) {
 
-		List<Particle> particles = SimUtil.particles(settings);
-		Box walls = SimUtil.walls(settings);
+		final List<Particle> particles = SimUtil.particles(settings);
+		final Box walls = SimUtil.walls(settings);
 
-		double boundaryMargin = settings.maxInitialVelocity;
+		final double boundaryMargin = settings.maxInitialVelocity;
 
 		double totalMomentum = 0;
 		for (int timeStep = 0; timeStep < settings.steps; ++timeStep) {
@@ -36,34 +36,34 @@ public class QuadTreeSimulator implements Simulator {
 				totalMomentum);
 	}
 
-	private double simulateOneStep(List<Particle> particles, Box walls,
-			double boundaryMargin) {
+	private double simulateOneStep(final List<Particle> particles, final Box walls,
+			final double boundaryMargin) {
 
-		boolean[] hasMoved = new boolean[particles.size()];
+		final boolean[] hasMoved = new boolean[particles.size()];
 
-		SpatialMap<Integer> map = QuadTree.empty(walls, 10, boundaryMargin);
+		final SpatialMap<Integer> map = QuadTree.empty(walls, 10, boundaryMargin);
 
 		for (int i = 0; i < particles.size(); ++i) {
-			Particle particle = particles.get(i);
-			Box bundingBox = particleBoundingBox(particle);
+			final Particle particle = particles.get(i);
+			final Box bundingBox = particleBoundingBox(particle);
 			map.add(bundingBox, i);
 		}
 
 		int totalMomentum = 0;
 		for (int i = 0; i < particles.size(); ++i) {
 
-			Particle p1 = particles.get(i);
+			final Particle p1 = particles.get(i);
 
-			Optional<Collision> collisionOpt = findCollision(map, p1,
+			final Optional<Collision> collisionOpt = findCollision(map, p1,
 					particles, hasMoved);
 
 			if (collisionOpt.isPresent()) {
-				Collision collision = collisionOpt.get();
+				final Collision collision = collisionOpt.get();
 
 				hasMoved[collision.otherParticleIndex] = true;
 
-				Particle p2 = particles.get(collision.otherParticleIndex);
-				double collisionTime = collision.collisionTime;
+				final Particle p2 = particles.get(collision.otherParticleIndex);
+				final double collisionTime = collision.collisionTime;
 				PHY.interact(p1, p2, collisionTime);
 			} else {
 				PHY.euler(p1, 1);
@@ -76,37 +76,37 @@ public class QuadTreeSimulator implements Simulator {
 		return totalMomentum;
 	}
 
-	private Box particleBoundingBox(Particle particle) {
-		Vector position = particle.position;
+	private Box particleBoundingBox(final Particle particle) {
+		final Vector position = particle.position;
 
-		Vector positionPlus = position.add(POS_RADIUS);
-		Vector positionMinus = position.add(NEG_RADIUS);
+		final Vector positionPlus = position.add(POS_RADIUS);
+		final Vector positionMinus = position.add(NEG_RADIUS);
 
-		Vector nextPosition = position.add(particle.velocity);
+		final Vector nextPosition = position.add(particle.velocity);
 
-		Vector nextPositionPlus = nextPosition.add(POS_RADIUS);
-		Vector nextPositionMinus = nextPosition.add(NEG_RADIUS);
+		final Vector nextPositionPlus = nextPosition.add(POS_RADIUS);
+		final Vector nextPositionMinus = nextPosition.add(NEG_RADIUS);
 
-		Vector boxMin = positionMinus.min(nextPositionMinus);
-		Vector boxMax = positionPlus.min(nextPositionPlus);
+		final Vector boxMin = positionMinus.min(nextPositionMinus);
+		final Vector boxMax = positionPlus.min(nextPositionPlus);
 
 		return Box.box(boxMin, boxMax);
 	}
 
-	private Optional<Collision> findCollision(SpatialMap<Integer> map,
-			Particle p, List<Particle> particles, boolean[] hasMoved) {
+	private Optional<Collision> findCollision(final SpatialMap<Integer> map,
+			final Particle p, final List<Particle> particles, final boolean[] hasMoved) {
 
-		List<Integer> candidates = map.get(particleBoundingBox(p));
+		final List<Integer> candidates = map.get(particleBoundingBox(p));
 
 		if (candidates.size() > 100)
 			System.err.println("To many candidates: " + candidates.size());
 
-		for (int candidate : candidates) {
+		for (final int candidate : candidates) {
 
 			if (!hasMoved[candidate]) {
 
-				Particle p2 = particles.get(candidate);
-				double collisionTime = PHY.collide(p, p2);
+				final Particle p2 = particles.get(candidate);
+				final double collisionTime = PHY.collide(p, p2);
 
 				if (collisionTime != Physics.NO_COLLISION)
 					return Optional.of(new Collision(candidate, collisionTime));
