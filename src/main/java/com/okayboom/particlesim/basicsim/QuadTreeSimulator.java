@@ -40,41 +40,41 @@ public class QuadTreeSimulator implements Simulator {
 	private double simulateOneStep(final List<Particle> particles, final Box walls,
 			final double boundaryMargin) {
 
-		final List<Particle> hasMoved = new ArrayList<>();
+		final SpatialMap<Particle> map = QuadTree.empty(walls, 10, boundaryMargin);
 
-		final SpatialMap<Integer> map = QuadTree.empty(walls, 10, boundaryMargin);
-
-		for (int i = 0; i < particles.size(); ++i) {
-			final Particle particle = particles.get(i);
+		for (final Particle particle : particles) {
 			final Box bundingBox = particleBoundingBox(particle);
-			map.add(bundingBox, i);
+			map.add(bundingBox, particle);
 		}
 
 		int totalMomentum = 0;
-		for (int i = 0; i < particles.size(); ++i) {
+		final List<Particle> movedParticles = new ArrayList<>();
+		while (!particles.isEmpty()) {
 
-			final Particle p1 = particles.get(i);
+			final Particle p1 = particles.remove(0);
 
-			if (!hasMoved.contains(p1)) {
-				final Optional<Collision> collisionOpt = findCollision(map, p1,
-						particles, hasMoved);
+			final Optional<Collision> collisionOpt = findCollision(map, p1,
+					particles, movedParticles);
 
 				if (collisionOpt.isPresent()) {
 					final Collision collision = collisionOpt.get();
 
-					final Particle p2 = collision.otherParticle;
-					hasMoved.add(p2);
+				final Particle p2 = collision.otherParticle;
+				particles.remove(p2);
 
-					final double collisionTime = collision.collisionTime;
-					PHY.interact(p1, p2, collisionTime);
-				} else {
-					PHY.euler(p1, 1);
-				}
-
-				hasMoved.add(p1);
+				final double collisionTime = collision.collisionTime;
+				PHY.interact(p1, p2, collisionTime);
+				movedParticles.add(p1);
+				movedParticles.add(p2);
+			} else {
+				movedParticles.add(p1.move(1));
 			}
 
-			totalMomentum += PHY.wall_collide(p1, walls);
+		}
+
+		for (final Particle movedParticle : movedParticles) {
+			particles.add(movedParticle);
+			totalMomentum += PHY.wall_collide(movedParticle, walls);
 		}
 
 		return totalMomentum;
@@ -97,29 +97,25 @@ public class QuadTreeSimulator implements Simulator {
 		return Box.box(boxMin, boxMax);
 	}
 
-	private Optional<Collision> findCollision(final SpatialMap<Integer> map,
-			final Particle p, final List<Particle> particles, final List<Particle> hasMoved) {
+	private Optional<Collision> findCollision(final SpatialMap<Particle> map,
+			final Particle p1, final List<Particle> particles,
+			final List<Particle> movedParticles) {
 
-		final List<Integer> candidates = map.get(particleBoundingBox(p));
+		final List<Particle> candidates = map.get(particleBoundingBox(p1));
 
 		if (candidates.size() > 100)
 			System.err.println("To many candidates: " + candidates.size());
 
 		Optional<Collision> collision = Optional.empty();
-		for (final int candidate : candidates) {
-
-			final Particle p2 = particles.get(candidate);
-			if (!hasMoved.contains(p2)) {
-
-				final double collisionTime = PHY.collide(p, p2);
-
+		for (final Particle p2 : candidates) {
+			if (!movedParticles.contains(p2)) {
+				final double collisionTime = PHY.collide(p1, p2);
 				if (collisionTime != Physics.NO_COLLISION) {
 					if (!collision.isPresent()
 							|| collisionTime < collision.get().collisionTime) {
 						collision = Optional.of(new Collision(p2, collisionTime));
 					}
 				}
-
 			}
 		}
 		return collision;

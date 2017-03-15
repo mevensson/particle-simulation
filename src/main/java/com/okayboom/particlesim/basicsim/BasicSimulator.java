@@ -32,56 +32,47 @@ public class BasicSimulator implements Simulator {
 	}
 
 	private double simulateOneStep(final List<Particle> particles, final Box walls) {
-		final int particleCount = particles.size();
-
-		final List<Particle> hasMoved = new ArrayList<>();
-
 		int totalMomentum = 0;
-		for (int i = 0; i < particleCount; ++i) {
-			final Particle p1 = particles.get(i);
+		final List<Particle> movedParticles = new ArrayList<>();
+		while (!particles.isEmpty()) {
+			final Particle p1 = particles.remove(0);
 
-			if (!hasMoved.contains(p1)) {
-				final Optional<Collision> collisionOpt = findCollision(particles, i,
-						hasMoved);
+			final Optional<Collision> collisionOpt = findCollision(particles, p1);
 
 				if (collisionOpt.isPresent()) {
 					final Collision collision = collisionOpt.get();
 
-					final Particle p2 = collision.otherParticle;
-					hasMoved.add(p2);
+				final Particle p2 = collision.otherParticle;
+				particles.remove(p2);
 
-					final double collisionTime = collision.collisionTime;
-					PHY.interact(p1, p2, collisionTime);
-				} else {
-					PHY.euler(p1, 1);
-				}
-				hasMoved.add(p1);
+				final double collisionTime = collision.collisionTime;
+				PHY.interact(p1, p2, collisionTime);
+				movedParticles.add(p1);
+				movedParticles.add(p2);
+			} else {
+				movedParticles.add(p1.move(1));
 			}
+		}
 
-			totalMomentum += PHY.wall_collide(p1, walls);
+		for (final Particle movedParticle : movedParticles) {
+			particles.add(movedParticle);
+			totalMomentum += PHY.wall_collide(movedParticle, walls);
 		}
 
 		return totalMomentum;
 	}
 
 	private Optional<Collision> findCollision(final List<Particle> particles,
-			final int firstParticleIndex, final List<Particle> hasMoved) {
+			final Particle p1) {
 		Optional<Collision> collision = Optional.empty();
-		final Particle p1 = particles.get(firstParticleIndex);
-		for (int j = firstParticleIndex + 1; j < particles.size(); ++j) {
+		for (final Particle p2 : particles) {
+			final double collisionTime = PHY.collide(p1, p2);
 
-			final Particle p2 = particles.get(j);
-			if (!hasMoved.contains(p2)) {
-
-				final double collisionTime = PHY.collide(p1, p2);
-
-				if (collisionTime != Physics.NO_COLLISION) {
-					if (!collision.isPresent()
-							|| collisionTime < collision.get().collisionTime) {
-						collision = Optional.of(new Collision(p2, collisionTime));
-					}
+			if (collisionTime != Physics.NO_COLLISION) {
+				if (!collision.isPresent()
+						|| collisionTime < collision.get().collisionTime) {
+					collision = Optional.of(new Collision(p2, collisionTime));
 				}
-
 			}
 		}
 		return collision;

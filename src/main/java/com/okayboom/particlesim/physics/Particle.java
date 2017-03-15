@@ -4,9 +4,15 @@ public final class Particle {
 	public Vector position;
 	public Vector velocity;
 
-	public Particle(Vector position, Vector velocity) {
+	public Particle(final Vector position, final Vector velocity) {
 		this.position = position;
 		this.velocity = velocity;
+	}
+
+	public Particle move(final double timeStep) {
+		final Vector movement = velocity.mult(timeStep);
+		final Vector newPosition = position.add(movement);
+		return new Particle(newPosition, velocity);
 	}
 
 	@Override
@@ -20,14 +26,14 @@ public final class Particle {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj)
 			return true;
 		if (obj == null)
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Particle other = (Particle) obj;
+		final Particle other = (Particle) obj;
 		if (position == null) {
 			if (other.position != null)
 				return false;
