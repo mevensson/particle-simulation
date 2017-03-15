@@ -1,5 +1,6 @@
 package com.okayboom.particlesim.basicsim;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,7 +40,7 @@ public class QuadTreeSimulator implements Simulator {
 	private double simulateOneStep(final List<Particle> particles, final Box walls,
 			final double boundaryMargin) {
 
-		final boolean[] hasMoved = new boolean[particles.size()];
+		final List<Particle> hasMoved = new ArrayList<>();
 
 		final SpatialMap<Integer> map = QuadTree.empty(walls, 10, boundaryMargin);
 
@@ -54,22 +55,23 @@ public class QuadTreeSimulator implements Simulator {
 
 			final Particle p1 = particles.get(i);
 
-			if (!hasMoved[i]) {
+			if (!hasMoved.contains(p1)) {
 				final Optional<Collision> collisionOpt = findCollision(map, p1,
 						particles, hasMoved);
 
 				if (collisionOpt.isPresent()) {
 					final Collision collision = collisionOpt.get();
 
-					hasMoved[collision.otherParticleIndex] = true;
-
 					final Particle p2 = particles.get(collision.otherParticleIndex);
+					hasMoved.add(p2);
+
 					final double collisionTime = collision.collisionTime;
 					PHY.interact(p1, p2, collisionTime);
 				} else {
 					PHY.euler(p1, 1);
 				}
-				hasMoved[i] = true;
+
+				hasMoved.add(p1);
 			}
 
 			totalMomentum += PHY.wall_collide(p1, walls);
@@ -96,7 +98,7 @@ public class QuadTreeSimulator implements Simulator {
 	}
 
 	private Optional<Collision> findCollision(final SpatialMap<Integer> map,
-			final Particle p, final List<Particle> particles, final boolean[] hasMoved) {
+			final Particle p, final List<Particle> particles, final List<Particle> hasMoved) {
 
 		final List<Integer> candidates = map.get(particleBoundingBox(p));
 
@@ -106,9 +108,9 @@ public class QuadTreeSimulator implements Simulator {
 		Optional<Collision> collision = Optional.empty();
 		for (final int candidate : candidates) {
 
-			if (!hasMoved[candidate]) {
+			final Particle p2 = particles.get(candidate);
+			if (!hasMoved.contains(p2)) {
 
-				final Particle p2 = particles.get(candidate);
 				final double collisionTime = PHY.collide(p, p2);
 
 				if (collisionTime != Physics.NO_COLLISION) {
