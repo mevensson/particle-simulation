@@ -20,8 +20,8 @@ public class VectorProperties {
 			@InRange(min = "-100", max = "100") double factor) {
 
 		Vector vf = v.mult(factor);
-		assertEquals(vf.x, v.x * factor, DELTA);
-		assertEquals(vf.y, v.y * factor, DELTA);
+		assertEquals(vf.getX(), v.getX() * factor, DELTA);
+		assertEquals(vf.getY(), v.getY() * factor, DELTA);
 	}
 
 	@Property
@@ -40,7 +40,7 @@ public class VectorProperties {
 	@Property
 	public void absIsAtLeastAsLargeAsIndividualVectorComponents(
 			@From(VectorGen.class) Vector a) {
-		assertTrue(a.abs() >= Math.abs(a.x));
-		assertTrue(a.abs() >= Math.abs(a.y));
+		assertTrue(a.abs() >= Math.abs(a.getX()));
+		assertTrue(a.abs() >= Math.abs(a.getY()));
 	}
 }

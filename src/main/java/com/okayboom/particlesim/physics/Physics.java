@@ -14,8 +14,8 @@ public class Physics {
 
 	/** Moves the a particle. */
 	public int euler(Particle a, double time_step) {
-		a.position.x = a.position.x + time_step * a.velocity.x;
-		a.position.y = a.position.y + time_step * a.velocity.y;
+		a.position.setX(a.position.getX() + time_step * a.velocity.getX());
+		a.position.setY(a.position.getY() + time_step * a.velocity.getY());
 		return 0;
 	}
 
@@ -26,25 +26,25 @@ public class Physics {
 	public double wall_collide(Particle p, Box box) {
 		double gPreassure = 0.0;
 
-		if (p.position.x < box.min.x) {
-			p.velocity.x = -p.velocity.x;
-			p.position.x = box.min.x + (box.min.x - p.position.x);
-			gPreassure += 2.0 * fabs(p.velocity.x);
+		if (p.position.getX() < box.min.getX()) {
+			p.velocity.setX(-p.velocity.getX());
+			p.position.setX(box.min.getX() + (box.min.getX() - p.position.getX()));
+			gPreassure += 2.0 * fabs(p.velocity.getX());
 		}
-		if (p.position.x > box.max.x) {
-			p.velocity.x = -p.velocity.x;
-			p.position.x = box.max.x - (p.position.x - box.max.x);
-			gPreassure += 2.0 * fabs(p.velocity.x);
+		if (p.position.getX() > box.max.getX()) {
+			p.velocity.setX(-p.velocity.getX());
+			p.position.setX(box.max.getX() - (p.position.getX() - box.max.getX()));
+			gPreassure += 2.0 * fabs(p.velocity.getX());
 		}
-		if (p.position.y < box.min.y) {
-			p.velocity.y = -p.velocity.y;
-			p.position.y = box.min.y + (box.min.y - p.position.y);
-			gPreassure += 2.0 * fabs(p.velocity.y);
+		if (p.position.getY() < box.min.getY()) {
+			p.velocity.setY(-p.velocity.getY());
+			p.position.setY(box.min.getY() + (box.min.getY() - p.position.getY()));
+			gPreassure += 2.0 * fabs(p.velocity.getY());
 		}
-		if (p.position.y > box.max.y) {
-			p.velocity.y = -p.velocity.y;
-			p.position.y = box.max.y - (p.position.y - box.max.y);
-			gPreassure += 2.0 * fabs(p.velocity.y);
+		if (p.position.getY() > box.max.getY()) {
+			p.velocity.setY(-p.velocity.getY());
+			p.position.setY(box.max.getY() - (p.position.getY() - box.max.getY()));
+			gPreassure += 2.0 * fabs(p.velocity.getY());
 		}
 		return gPreassure;
 	}
@@ -57,13 +57,13 @@ public class Physics {
 		double a, b, c;
 		double temp, t1, t2;
 
-		a = sqr(p1.velocity.x - p2.velocity.x)
-				+ sqr(p1.velocity.y - p2.velocity.y);
-		b = 2 * ((p1.position.x - p2.position.x)
-				* (p1.velocity.x - p2.velocity.x) + (p1.position.y - p2.position.y)
-				* (p1.velocity.y - p2.velocity.y));
-		c = sqr(p1.position.x - p2.position.x)
-				+ sqr(p1.position.y - p2.position.y) - 4 * 1 * 1;
+		a = sqr(p1.velocity.getX() - p2.velocity.getX())
+				+ sqr(p1.velocity.getY() - p2.velocity.getY());
+		b = 2 * ((p1.position.getX() - p2.position.getX())
+				* (p1.velocity.getX() - p2.velocity.getX()) + (p1.position.getY() - p2.position.getY())
+				* (p1.velocity.getY() - p2.velocity.getY()));
+		c = sqr(p1.position.getX() - p2.position.getX())
+				+ sqr(p1.position.getY() - p2.position.getY()) - 4 * 1 * 1;
 
 		if (a != 0.0) {
 			temp = sqr(b) - 4 * a * c;
@@ -99,13 +99,13 @@ public class Physics {
 			euler(p2, t);
 
 			/* Rotate the coordinate system around p1 */
-			p2temp.position.x = p2.position.x - p1.position.x;
-			p2temp.position.y = p2.position.y - p1.position.y;
+			p2temp.position.setX(p2.position.getX() - p1.position.getX());
+			p2temp.position.setY(p2.position.getY() - p1.position.getY());
 
 			/* Givens plane rotation, Golub, van Loan p. 216 */
-			a = p2temp.position.x;
-			b = p2temp.position.y;
-			if (p2.position.y == 0) {
+			a = p2temp.position.getX();
+			b = p2temp.position.getY();
+			if (p2.position.getY() == 0) {
 				c = 1;
 				s = 0;
 			} else {
@@ -121,22 +121,22 @@ public class Physics {
 			}
 
 			/* This should be equal to 2r */
-			p2temp.position.x = c * p2temp.position.x + s * p2temp.position.y;
-			p2temp.position.y = 0.0;
+			p2temp.position.setX(c * p2temp.position.getX() + s * p2temp.position.getY());
+			p2temp.position.setY(0.0);
 
-			p2temp.velocity.x = c * p2.velocity.x + s * p2.velocity.y;
-			p2temp.velocity.y = -s * p2.velocity.x + c * p2.velocity.y;
-			p1temp.velocity.x = c * p1.velocity.x + s * p1.velocity.y;
-			p1temp.velocity.y = -s * p1.velocity.x + c * p1.velocity.y;
+			p2temp.velocity.setX(c * p2.velocity.getX() + s * p2.velocity.getY());
+			p2temp.velocity.setY(-s * p2.velocity.getX() + c * p2.velocity.getY());
+			p1temp.velocity.setX(c * p1.velocity.getX() + s * p1.velocity.getY());
+			p1temp.velocity.setY(-s * p1.velocity.getX() + c * p1.velocity.getY());
 
 			/* Assume the balls has the same mass... */
-			p1temp.velocity.x = -p1temp.velocity.x;
-			p2temp.velocity.x = -p2temp.velocity.x;
+			p1temp.velocity.setX(-p1temp.velocity.getX());
+			p2temp.velocity.setX(-p2temp.velocity.getX());
 
-			p1.velocity.x = c * p1temp.velocity.x - s * p1temp.velocity.y;
-			p1.velocity.y = s * p1temp.velocity.x + c * p1temp.velocity.y;
-			p2.velocity.x = c * p2temp.velocity.x - s * p2temp.velocity.y;
-			p2.velocity.y = s * p2temp.velocity.x + c * p2temp.velocity.y;
+			p1.velocity.setX(c * p1temp.velocity.getX() - s * p1temp.velocity.getY());
+			p1.velocity.setY(s * p1temp.velocity.getX() + c * p1temp.velocity.getY());
+			p2.velocity.setX(c * p2temp.velocity.getX() - s * p2temp.velocity.getY());
+			p2.velocity.setY(s * p2temp.velocity.getX() + c * p2temp.velocity.getY());
 
 			/* Move the balls the remaining time. */
 			c = 1.0 - t;

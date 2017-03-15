@@ -100,7 +100,7 @@ public class QuadTree<V> implements SpatialMap<V> {
 		Box maxMinBox = box(mid, boundary.maxMin());
 
 		Vector boundarySize = boundary.max.sub(boundary.min);
-		double minLength = Math.min(boundarySize.x, boundarySize.y);
+		double minLength = Math.min(boundarySize.getX(), boundarySize.getY());
 		double padding = Math.min(minLength * MARGIN_MAX_FACTOR,
 				childBoundaryMargin);
 

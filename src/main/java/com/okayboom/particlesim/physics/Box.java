@@ -26,7 +26,7 @@ public final class Box {
 		Vector intMin = min.max(b2.min);
 		Vector intMax = max.min(b2.max);
 
-		boolean doIntersect = intMin.x < intMax.x && intMin.y < intMax.y;
+		boolean doIntersect = intMin.getX() < intMax.getX() && intMin.getY() < intMax.getY();
 		Box box = doIntersect ? box(intMin, intMax) : null;
 		return Optional.ofNullable(box);
 	}
@@ -68,17 +68,17 @@ public final class Box {
 	}
 
 	public Vector mid() {
-		double x = (min.x + max.x) / 2;
-		double y = (min.y + max.y) / 2;
+		double x = (min.getX() + max.getX()) / 2;
+		double y = (min.getY() + max.getY()) / 2;
 		return v(x, y);
 	}
 
 	public Vector minMax() {
-		return v(min.x, max.y);
+		return v(min.getX(), max.getY());
 	}
 
 	public Vector maxMin() {
-		return v(max.x, min.y);
+		return v(max.getX(), min.getY());
 	}
 
 	public Box union(Box b2) {
