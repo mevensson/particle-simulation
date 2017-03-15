@@ -1,17 +1,19 @@
 package com.okayboom.particlesim.basicsim;
 
+import com.okayboom.particlesim.physics.Particle;
+
 public final class Collision {
-	final int otherParticleIndex;
+	final Particle otherParticle;
 	final double collisionTime;
 
-	Collision(final int otherParticleIndex, final double collisionTime) {
-		this.otherParticleIndex = otherParticleIndex;
+	Collision(final Particle otherParticle, final double collisionTime) {
+		this.otherParticle = otherParticle;
 		this.collisionTime = collisionTime;
 	}
 
 	@Override
 	public String toString() {
-		return "Collision [otherParticleIndex=" + otherParticleIndex
-				+ ", collisionTime=" + collisionTime + "]";
+		return "Collision [otherParticle=" + otherParticle + ", collisionTime="
+				+ collisionTime + "]";
 	}
 }

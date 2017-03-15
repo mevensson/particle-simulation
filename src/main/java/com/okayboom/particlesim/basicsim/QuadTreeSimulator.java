@@ -62,7 +62,7 @@ public class QuadTreeSimulator implements Simulator {
 				if (collisionOpt.isPresent()) {
 					final Collision collision = collisionOpt.get();
 
-					final Particle p2 = particles.get(collision.otherParticleIndex);
+					final Particle p2 = collision.otherParticle;
 					hasMoved.add(p2);
 
 					final double collisionTime = collision.collisionTime;
@@ -116,7 +116,7 @@ public class QuadTreeSimulator implements Simulator {
 				if (collisionTime != Physics.NO_COLLISION) {
 					if (!collision.isPresent()
 							|| collisionTime < collision.get().collisionTime) {
-						collision = Optional.of(new Collision(candidate, collisionTime));
+						collision = Optional.of(new Collision(p2, collisionTime));
 					}
 				}
 
