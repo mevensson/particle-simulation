@@ -101,6 +101,7 @@ public class QuadTreeSimulator implements Simulator {
 		if (candidates.size() > 100)
 			System.err.println("To many candidates: " + candidates.size());
 
+		Optional<Collision> collision = Optional.empty();
 		for (final int candidate : candidates) {
 
 			if (!hasMoved[candidate]) {
@@ -108,11 +109,15 @@ public class QuadTreeSimulator implements Simulator {
 				final Particle p2 = particles.get(candidate);
 				final double collisionTime = PHY.collide(p, p2);
 
-				if (collisionTime != Physics.NO_COLLISION)
-					return Optional.of(new Collision(candidate, collisionTime));
+				if (collisionTime != Physics.NO_COLLISION) {
+					if (!collision.isPresent()
+							|| collisionTime < collision.get().collisionTime) {
+						collision = Optional.of(new Collision(candidate, collisionTime));
+					}
+				}
 
 			}
 		}
-		return Optional.empty();
+		return collision;
 	}
 }
