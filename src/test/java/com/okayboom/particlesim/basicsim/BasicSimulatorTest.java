@@ -18,7 +18,7 @@ public class BasicSimulatorTest {
 				.boxHeight(1000).steps(10);
 		final BasicSimulator simulator = new BasicSimulator();
 		final SimResult result = simulator.simulate(settings);
-		assertThat(result.totalBoxMomentum, is(8387.0));
+		assertThat(result.totalBoxMomentum, is(7695.0));
 	}
 
 	@Ignore
@@ -29,7 +29,7 @@ public class BasicSimulatorTest {
 				.boxHeight(1000).steps(500);
 		final BasicSimulator simulator = new BasicSimulator();
 		final SimResult result = simulator.simulate(settings);
-		assertThat(result.totalBoxMomentum, is(414892.0));
+		assertThat(result.totalBoxMomentum, is(381305.0));
 	}
 
 }

@@ -39,19 +39,21 @@ public class BasicSimulator implements Simulator {
 		for (int i = 0; i < particleCount; ++i) {
 			final Particle p1 = particles.get(i);
 
-			final Optional<Collision> collisionOpt = findCollision(particles, i,
-					hasMoved);
+			if (!hasMoved[i]) {
+				final Optional<Collision> collisionOpt = findCollision(particles, i,
+						hasMoved);
 
-			if (collisionOpt.isPresent()) {
-				final Collision collision = collisionOpt.get();
+				if (collisionOpt.isPresent()) {
+					final Collision collision = collisionOpt.get();
 
-				hasMoved[collision.otherParticleIndex] = true;
+					hasMoved[collision.otherParticleIndex] = true;
 
-				final Particle p2 = particles.get(collision.otherParticleIndex);
-				final double collisionTime = collision.collisionTime;
-				PHY.interact(p1, p2, collisionTime);
-			} else {
-				PHY.euler(p1, 1);
+					final Particle p2 = particles.get(collision.otherParticleIndex);
+					final double collisionTime = collision.collisionTime;
+					PHY.interact(p1, p2, collisionTime);
+				} else {
+					PHY.euler(p1, 1);
+				}
 			}
 
 			hasMoved[i] = true;
