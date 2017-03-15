@@ -1,5 +1,7 @@
 package com.okayboom.particlesim.physics;
 
+import static com.okayboom.particlesim.physics.Vector.v;
+
 import com.pholser.junit.quickcheck.generator.GenerationStatus;
 import com.pholser.junit.quickcheck.generator.Generator;
 import com.pholser.junit.quickcheck.random.SourceOfRandomness;
@@ -14,11 +16,11 @@ public class VectorGen extends Generator<Vector> {
 	}
 
 	@Override
-	public Vector generate(SourceOfRandomness random, GenerationStatus status) {
-		return new Vector(withChanceOfZero(random), withChanceOfZero(random));
+	public Vector generate(final SourceOfRandomness random, final GenerationStatus status) {
+		return v(withChanceOfZero(random), withChanceOfZero(random));
 	}
 
-	double withChanceOfZero(SourceOfRandomness random) {
+	double withChanceOfZero(final SourceOfRandomness random) {
 		return (random.nextDouble() < chanceOfZero) ? 0.0 : random.nextDouble(
 				-rangeMax, rangeMax);
 	}
